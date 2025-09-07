@@ -6,6 +6,18 @@ from django.db.models import F
 from .models import Quote
 
 class QuoteFilter(django_filters.FilterSet):
+    """
+    Фильтрация списка цитат по числу лайков/дизлайков, просмотрам, дате создания
+    
+    Attributes:
+        likes_order(ChoiceFilter): Фильтрация по числу лайков (по убыванию/возрастанию)
+        dislikes_order(ChoiceFilter): Фильтрация по числу дизлайков (по убыванию/возрастанию)
+        views_order(ChoiceFilter): Фильтрация числу просмотров (по убыванию/возрастанию)
+        date_from(DateFilter): Фильтрация по дате начала периода (>=)
+        date_to(DateFilter): Фильтрация по дате окончания периода (<=)
+        limit(NumberFilter): Фильтрация числа отображаемых значений на странице
+    """
+    
     likes_order = django_filters.ChoiceFilter(
         field_name='likes',
         choices=(('asc', 'По возрастанию'), ('desc', 'По убыванию')),
@@ -23,12 +35,9 @@ class QuoteFilter(django_filters.FilterSet):
         choices=(('asc', 'По возрастанию'), ('desc', 'По убыванию')),
         method='filter_views_order'
     )
-
-    created_order = django_filters.ChoiceFilter(
-        field_name='created_at',
-        choices=(('asc', 'По возрастанию'), ('desc', 'По убыванию')),
-        method='filter_created_order'
-    )
+    
+    date_from = django_filters.DateFilter(field_name='created_at', label='Дата добавления (начало)', lookup_expr='gte')
+    date_to = django_filters.DateFilter(field_name='created_at', label='Дата добавления (конец)', lookup_expr='lte')
     
     limit = django_filters.NumberFilter(label='Число значений', method='filter_limit')
 
@@ -57,13 +66,6 @@ class QuoteFilter(django_filters.FilterSet):
             return queryset.order_by('-views')
         return queryset
 
-    def filter_created_order(self, queryset, name, value):
-        if value == 'asc':
-            return queryset.order_by('created_at')
-        elif value == 'desc':
-            return queryset.order_by('-created_at')
-        return queryset
-    
     def filter_limit(self, queryset, name, value):
         try:
             limit = int(value)

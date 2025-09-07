@@ -2,6 +2,20 @@ from rest_framework import serializers
 from .models import Quote
 
 class QuoteSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор цитаты
+    
+    Fields:
+        text: Текст цитаты
+        source: Источник цитаты
+        weight: Вес
+        likes: Лайки
+        dislikes: Дизлайки
+        views: Просмотры
+        crated_at: Дата создания/изменения
+    
+    """
+    
     class Meta:
         model = Quote
         fields = ["id", "text", "source", "weight", "likes", "dislikes", "views", "created_at"]
@@ -24,4 +38,10 @@ class QuoteSerializer(serializers.ModelSerializer):
 
 
 class QuoteActionSerializer(serializers.Serializer):
+    """
+    Сериализатор действия с цитатой (лайк, дизлайк)
+    
+    Fields:
+        action: Доступное действие
+    """
     action = serializers.ChoiceField(choices=["like", "dislike"])
