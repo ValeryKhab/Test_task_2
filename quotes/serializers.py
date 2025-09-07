@@ -21,3 +21,7 @@ class QuoteSerializer(serializers.ModelSerializer):
             if qt.count() >= 3:
                 raise serializers.ValidationError("У одного источника не может быть больше трех цитат!")
         return data
+
+
+class QuoteActionSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(choices=["like", "dislike"])
