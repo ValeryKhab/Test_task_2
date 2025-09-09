@@ -22,7 +22,7 @@ class Quote(models.Model):
         verbose_name_plural(str): Название модели во множественном числе
     """
     
-    text = models.TextField(unique=True, verbose_name="цитата")
+    text = models.CharField(max_length=255, unique=True, verbose_name="цитата")
     source = models.CharField(max_length=64, verbose_name="источник")
     weight = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)], default=1, 
                                          help_text="1–100: чем больше, тем выше шанс выпадения", verbose_name="вес")
